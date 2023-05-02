@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:know_it/routes/paths.dart';
-
+import '../../profile/profile.dart';
 import '../../../knowit_exporter.dart';
 
 class GameSelectedTile extends ConsumerWidget {
@@ -135,8 +135,8 @@ class GameTile extends StatelessWidget {
                       ),
 
                       HorizontalSpace(of: spacing8),
+                       
 
-                      //
                       Text(
                         "Play Now",
                         style: TextStyle(
