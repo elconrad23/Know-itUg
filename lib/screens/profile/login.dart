@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:know_it/knowit_exporter.dart';
 import 'package:flutter/material.dart';
+import '../auth/services/FirebaseUIActivity.java';
 import '../auth/services/auth_services.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import'package:google_fonts/google_fonts.dart';
@@ -14,6 +16,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+final TextEditingController emailAddressController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
+String emailHint = "someone@example.com";
+String passwordHint = "Password";
+
   @override
   Widget build(BuildContext context) {
 
@@ -52,10 +59,11 @@ class _LoginPageState extends State<LoginPage> {
                 border: Border.all(color: Colors.transparent),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const TextField(
+              child: TextField(
+                controller: emailAddressController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Email',
+                  hintText: emailHint,
                 ),
               ),
             ),
@@ -70,12 +78,13 @@ class _LoginPageState extends State<LoginPage> {
                 border: Border.all(color: Colors.white),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 18.0),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Password',
+                      hintText: passwordHint,
                     ),
                   ),
                 ),
@@ -135,16 +144,17 @@ class _LoginPageState extends State<LoginPage> {
                 border: Border.all(color: Colors.white),
                 borderRadius: BorderRadius.circular(12),
               ),
-                  child: const Text(
-                    'Sign in',
-                    style: TextStyle(
+                  child: ElevatedButton(
+                    onPressed:(){
+                      loginFunction();
+                    }, child: const Text(
+                        'Sign in',
+                        style: TextStyle(
                       color: knowItOrange,
-                      fontWeight: FontWeight.bold,
-                    )
-                    ,
-                  ),
+                      fontWeight: FontWeight.bold,),),
                     ),
                   ),
+                    ),
                   const SizedBox(height: 10,
                   ),
           
@@ -194,10 +204,25 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       ),
                     ],
-                  )
-        ],
+                  ),]
       ),
-      ),
-                );
+      ),);
   }
+  
+  Future<void> loginFunction() async {
+        try {
+          var emailAddress = emailAddressController.text.toLowerCase();
+          var password = passwordController.text;  
+          final credential = await FirebaseAuth.instance.getUserWithEmailAndPassword(
+          email: emailAddress,
+          password: password,
+        );
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'user-not-found') {
+    emailHint = 'No user found for that email.';
+  } else if (e.code == 'wrong-password') {
+    passwordHint = 'Wrong password provided for that user.';
+  }
+}
+ }
 }

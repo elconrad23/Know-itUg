@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 // ignore: depend_on_referenced_packages
 import 'package:google_sign_in/google_sign_in.dart';
-import 'FirebaseUIActivity.java';
 
 class AuthService {
   //Google sign in
